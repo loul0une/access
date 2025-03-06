@@ -80,6 +80,10 @@ footer {
     position: relative;
 }
 
+.movie-item  > h5 {
+    color: #000;
+}
+
 .movie-details {
     display: none;
     position: absolute;
