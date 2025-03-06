@@ -17,16 +17,15 @@
         <h1>Mon Profil</h1>
         <img src = "./titre.png" alt = "description de l'image" width="80%">    
     </header>
-</header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="index.html">Accueil</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" href="catalogue.html">Catalogue</a></li>
+                    <li class="nav-item"><a class="nav-link" href="critiques.html">Critiques</a></li>
                     <li class="nav-item"><a class="nav-link" href="collection.html">Ma Collection</a></li>
                     <li class="nav-item"><a class="nav-link" href="ajouter.html">Ajouter un Film</a></li>
-                    <li class="nav-item"><a class="nav-link" href="critiques.html">Critiques</a></li>
                     <li class="nav-item"><a class="nav-link" href="profil.html">Profil</a></li>
                     <li class="nav-item"><a class="nav-link" href="aide.html">Aide</a></li>
                 </ul>
@@ -96,16 +95,22 @@
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Récupérer les informations du sessionStorage
-            const userName = sessionStorage.getItem('userName');
+            // Vérifier si l'utilisateur est connecté
             const userEmail = sessionStorage.getItem('userEmail');
+            if (!userEmail) {
+                alert('Vous devez être connecté pour accéder à cette page.');
+                window.location.href = 'login.html';
+            } else {
+                // Récupérer les informations du sessionStorage
+                const userName = sessionStorage.getItem('userName');
 
-            // Afficher les informations dans la page
-            if (userName) {
-                document.querySelector('.content p:nth-child(2)').textContent = 'Nom : ' + userName;
-            }
-            if (userEmail) {
-                document.querySelector('.content p:nth-child(3)').textContent = 'Email : ' + userEmail;
+                // Afficher les informations dans la page
+                if (userName) {
+                    document.querySelector('.content p:nth-child(2)').textContent = 'Nom : ' + userName;
+                }
+                if (userEmail) {
+                    document.querySelector('.content p:nth-child(3)').textContent = 'Email : ' + userEmail;
+                }
             }
         });
 

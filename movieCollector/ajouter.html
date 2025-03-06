@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,21 @@
         body { background-color: #f8f9fa; }
         .hidden { display: none; }
         .low-contrast { color: #ccc; }
+        .suggestions {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: white;
+            width: 70%;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -23,10 +38,9 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" href="catalogue.html">Catalogue</a></li>
-                    <li class="nav-item"><a class="nav-link" href="ajouter.html">Ajouter un Film</a></li>
                     <li class="nav-item"><a class="nav-link" href="critiques.html">Critiques</a></li>
                     <li class="nav-item"><a class="nav-link" href="collection.html">Ma Collection</a></li>
-
+                    <li class="nav-item"><a class="nav-link" href="ajouter.html">Ajouter un Film</a></li>
                     <li class="nav-item"><a class="nav-link" href="profil.html">Profil</a></li>
                     <li class="nav-item"><a class="nav-link" href="aide.html">Aide</a></li>
                 </ul>
@@ -42,8 +56,9 @@
         <h2>Formulaire d'Ajout de Film</h2>
         <form id="add-movie-form">
             <div class="form-group">
-                <label for="movie-id">ID du Film (IMDb ID)</label>
-                <input type="text" class="form-control" id="movie-id" placeholder="Entrez l'ID du film">
+                <label for="movie-id">Nom du Film</label>
+                <input type="text" class="form-control" id="movie-name" placeholder="Entrez le nom du film" onkeyup="search_film()">
+                <div id="suggestions" class="suggestions"></div>
             </div>
             <button aria-label="buton" type="submit" class="btn btn-primary" title="Ajouter le film à la collection">Ajouter</button>
         </form>
@@ -87,10 +102,45 @@
         </div>
     </footer>
     <script>
+        const movies = [
+            { Title: "The Matrix", Year: "1999", imdbID: "tt0133093" },
+            { Title: "The Shawshank Redemption", Year: "1994", imdbID: "tt0111161" },
+            { Title: "The Godfather", Year: "1972", imdbID: "tt0068646" },
+            { Title: "The Dark Knight", Year: "2008", imdbID: "tt0468569" },
+            { Title: "Fight Club", Year: "1999", imdbID: "tt0137523" }
+        ];
+
+        function search_film() {
+            const input = document.getElementById('movie-name').value.toLowerCase();
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = '';
+            if (input) {
+                const filteredMovies = movies.filter(movie => movie.Title.toLowerCase().includes(input));
+                filteredMovies.forEach(movie => {
+                    const div = document.createElement('div');
+                    div.classList.add('suggestion-item');
+                    div.textContent = `${movie.Title} (${movie.Year})`;
+                    div.onclick = () => {
+                        document.getElementById('movie-name').value = movie.Title;
+                        suggestions.innerHTML = '';
+                    };
+                    suggestions.appendChild(div);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userEmail = sessionStorage.getItem('userEmail');
+            if (!userEmail) {
+                alert('Vous devez être connecté pour accéder à cette page.');
+                window.location.href = 'login.html';
+            }
+        });
+
         // Ajouter un film à la collection
         document.getElementById('add-movie-form').addEventListener('submit', async function(event) {
             event.preventDefault();
-            const movieId = document.getElementById('movie-id').value;
+            const movieId = document.getElementById('movie-name').value;
 
             const collection = JSON.parse(sessionStorage.getItem('userCollection')) || [];
             collection.push(movieId);
